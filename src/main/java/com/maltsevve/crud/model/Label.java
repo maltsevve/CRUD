@@ -1,12 +1,13 @@
 package com.maltsevve.crud.model;
 
 public class Label {
-    private Long id;
+    private static long count = 0;
+    private long id;
     private String name;
 
-    public Label(Long id, String name) {
-        this.id = id;
+    public Label(String name) {
         this.name = name;
+        id = ++count;
     }
 
     public Long getId() {
@@ -17,7 +18,7 @@ public class Label {
         return name;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 

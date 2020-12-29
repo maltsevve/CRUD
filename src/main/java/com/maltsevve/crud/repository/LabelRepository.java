@@ -1,11 +1,8 @@
 package com.maltsevve.crud.repository;
 
 import com.maltsevve.crud.model.Label;
-import com.sun.source.tree.IfTree;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +10,7 @@ public class LabelRepository {
     private final String labels = "src/main/resources/files/labels.txt";
     List<Label> temp;
 
-    Label getById(Long id) {
+    Label getById(long id) {
         temp = readToList();
         for (Label label : temp) {
             if (label.getId().equals(id))
@@ -38,6 +35,7 @@ public class LabelRepository {
             if (temp.get(i).getId().equals(label.getId()))
                 temp.set(i, label);
         }
+        writeFromList(temp);
     }
 
     void deleteById(long id) {
@@ -47,7 +45,8 @@ public class LabelRepository {
     }
 
     private void writeFromList(List<Label> list) {
-        try (FileWriter fw = new FileWriter(labels, false)) {
+        File file = new File(labels);
+        try (FileWriter fw = new FileWriter(file, false)) {
             for (Label label : list) {
                 fw.write(label.getId() + "=" + label.getName() + "\n");
             }
@@ -70,9 +69,10 @@ public class LabelRepository {
 
                 for (String s : temp) {
                     String[] str = s.split("=");
-                    list.add(new Label(Long.parseLong(str[0]), str[1]));
+                    Label label = new Label(str[1]);
+                    label.setId(Long.parseLong(str[0]));
+                    list.add(label);
                 }
-
                 return list;
             }
         } catch (FileNotFoundException e) {
