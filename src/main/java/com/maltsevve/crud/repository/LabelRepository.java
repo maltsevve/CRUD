@@ -8,10 +8,10 @@ import java.util.List;
 
 public class LabelRepository {
     private final String labels = "src/main/resources/files/labels.txt";
-    List<Label> temp;
+    private static long count = 0;
 
     Label getById(long id) {
-        temp = readToList();
+        List<Label> temp = readToList();
         for (Label label : temp) {
             if (label.getId().equals(id))
                 return label;
@@ -23,23 +23,29 @@ public class LabelRepository {
         return readToList();
     }
 
-    void save(Label label) {
-        temp = readToList();
-        temp.add(label);
+    Label save(Label label) { // Тут переделать с учетом нового типа возвращаемого значения
+        Label lab = generateID(label);
+        List<Label> temp = readToList();
+        temp.add(lab);
         writeFromList(temp);
+        return lab;
     }
 
-    void update(Label label) {
-        temp = readToList();
+    Label update(Label label) {
+        List<Label> temp = readToList();
         for (int i = 0; i < temp.size(); i++) {
-            if (temp.get(i).getId().equals(label.getId()))
+            if (temp.get(i).getId().equals(label.getId())) {
                 temp.set(i, label);
+                writeFromList(temp);
+                return label;
+            }
         }
-        writeFromList(temp);
+        System.out.println("Update is unavailable: no such object in a file.");
+        return label;
     }
 
     void deleteById(long id) {
-        temp = readToList();
+        List<Label> temp = readToList();
         temp.removeIf(label -> label.getId().equals(id));
         writeFromList(temp);
     }
@@ -81,5 +87,11 @@ public class LabelRepository {
             System.out.println("Ошибка ввода-вывода: " + e);
         }
         return list;
+    }
+
+    public Label generateID(Label label) {
+        label.setId(count);
+        count++;
+        return label;
     }
 }
