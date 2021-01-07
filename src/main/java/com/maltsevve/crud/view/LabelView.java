@@ -23,7 +23,7 @@ class LabelView {
                 "5 - Delete\n" +
                 "6 - Exit");
     }
-    
+
     public void logic() {
         System.out.println(menu());
         String input = sc.nextLine();
@@ -53,12 +53,15 @@ class LabelView {
                                 label.setId(Long.parseLong(strs[0]));
                                 lc.update(label);
                                 System.out.println();
-                            } else
+                            } else {
                                 System.out.println("The entered name is identical to the existing one.\n");
-                        } else
+                            }
+                        } else {
                             System.out.println("No such object in the file.\n");
-                    } else
+                        }
+                    } else {
                         System.out.println("Invalid input format.\n");
+                    }
 
                     logic();
                 }
@@ -67,11 +70,14 @@ class LabelView {
                     input = sc.nextLine();
                     if (input.matches("\\d+")) {
                         Label lb = lc.getByID(Long.parseLong(input));
-                        if (lb != null)
+                        if (lb != null) {
                             System.out.println(lb.getId() + " " + lb.getName() + "\n");
-                        else System.out.println("No such object in the file.\n");
-                    } else
+                        } else {
+                            System.out.println("No such object in the file.\n");
+                        }
+                    } else {
                         System.out.println("Invalid ID.\n");
+                    }
                     logic();
                 }
                 case 4 -> { // GET ALL
@@ -79,22 +85,25 @@ class LabelView {
                     if (!lc.getAll().isEmpty()) {
                         lc.getAll().forEach((n) -> System.out.println(n.getId() + " " + n.getName()));
                         System.out.println();
-                    }
-                    else
+                    } else {
                         System.out.println("File is empty.\n");
+                    }
                     logic();
                 }
                 case 5 -> { // DELETE BY ID
                     System.out.println("Input id: ");
                     input = sc.nextLine();
                     if (input.matches("\\d+")) {
-                        long l = Long.parseLong(input);
+                        Long l = Long.parseLong(input);
                         if (l > 0 && lc.getAll().stream().anyMatch(lb -> lb.getId() == l)) {
                             lc.deleteById(l);
                             System.out.println();
-                        } else System.out.println("No such object in the file.\n");
-                    } else
+                        } else {
+                            System.out.println("No such object in the file.\n");
+                        }
+                    } else {
                         System.out.println("Invalid ID.\n");
+                    }
                     logic();
                 }
                 case 6 -> {

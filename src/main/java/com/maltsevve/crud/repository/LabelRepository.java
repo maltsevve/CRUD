@@ -17,7 +17,7 @@ public class LabelRepository {
     public LabelRepository() {
     }
 
-    public Label getById(long id) {
+    public Label getById(Long id) {
         List<Label> labels = readToList();
         return labels.stream().filter((n) -> n.getId().equals(id)).findFirst().orElse(null);
     }
@@ -37,18 +37,20 @@ public class LabelRepository {
     public Label update(Label label) {
         List<Label> labels = readToList();
         Label lb = labels.stream().filter((n) -> n.getId().equals(label.getId())).findFirst().orElse(null);
-        if (lb == null) System.out.println("Update is unavailable: no such ID in the file.");
-        else {
+        if (lb == null) {
+            System.out.println("Update is unavailable: no such ID in the file.");
+        } else {
             labels.set(labels.indexOf(lb), label);
             writeFromList(labels);
         }
         return label;
     }
 
-    public void deleteById(long id) {
+    public void deleteById(Long id) {
         List<Label> labels = readToList();
-        if (labels.removeIf(label -> label.getId().equals(id)))
+        if (labels.removeIf(label -> label.getId().equals(id))) {
             System.out.println("Label " + id + " deleted.");
+        }
         writeFromList(labels);
     }
 
@@ -59,17 +61,17 @@ public class LabelRepository {
         try {
             Files.write(path, strings, StandardCharsets.UTF_8);
         } catch (IOException e) {
-            System.out.println("Ошибка ввода-вывода: " + e);;
+            System.out.println("Ошибка ввода-вывода: " + e);
+            ;
         }
     }
 
     private List<Label> readToList() {          // Заменить цикл на stream
         List<Label> list = new ArrayList<>();
-        List<String> strings;
         Path path = Paths.get(labels);
 
         try (Stream<String> lineStream = Files.lines(path)) {
-            strings = lineStream.collect(Collectors.toList());
+            List<String> strings = lineStream.collect(Collectors.toList());
             if (!strings.isEmpty()) {
                 for (String s : strings) {
                     String[] str = s.split("=");
@@ -86,11 +88,13 @@ public class LabelRepository {
         return list;
     }
 
-    long generateID() {
+    Long generateID() {
         List<Label> labels = readToList();
-        if (!labels.isEmpty())
+        if (!labels.isEmpty()) {
             return Objects.requireNonNull(labels.stream().max(Comparator.
                     comparing(Label::getId)).orElse(null)).getId() + 1;
-        else return 1;
+        } else {
+            return 1L;
+        }
     }
 }

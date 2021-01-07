@@ -11,11 +11,12 @@ public class LabelController { //Тут так же выполняем пров�
     public LabelController() {
     }
 
-    public Label getByID(long id) {
-        if (id > 0 && lr.getById(id) != null)
+    public Label getByID(Long id) {
+        if (id > 0 && lr.getById(id) != null) {
             return lr.getById(id);
-        else
+        } else {
             return null;
+        }
     }
 
     public List<Label> getAll() {
@@ -27,14 +28,16 @@ public class LabelController { //Тут так же выполняем пров�
     }
 
     public Label update(Label label) {
-        if (label.getId() > 0 && lr.getById(label.getId()) != null)
+        if (label.getId() > 0 && lr.getById(label.getId()) != null) {
             return lr.update(label);
-        else
+        } else {
             return label;
+        }
     }
 
-    public void deleteById(long id) {
-        if (lr.getById(id) != null)
+    public void deleteById(Long id) {
+        if (lr.getById(id) != null) {
             lr.deleteById(id);
+        }
     }
 }
