@@ -10,6 +10,10 @@ class LabelView {
     private final LabelController lc = new LabelController();
     Scanner sc = new Scanner(System.in);
 
+    LabelView() {
+
+    }
+
     private String menu() {
         return ("Select menu item:\n" +
                 "1 - Save\n" +

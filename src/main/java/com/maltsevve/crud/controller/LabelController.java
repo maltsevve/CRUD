@@ -12,8 +12,10 @@ public class LabelController { //Тут так же выполняем пров�
     }
 
     public Label getByID(long id) {
-        // добавить проверку: существет ли такой id?
-        return lr.getById(id);
+        if (id > 0 && lr.getById(id) != null)
+            return lr.getById(id);
+        else
+            return null;
     }
 
     public List<Label> getAll() {
@@ -25,13 +27,14 @@ public class LabelController { //Тут так же выполняем пров�
     }
 
     public Label update(Label label) {
-        // добавить проверку: существет ли такой id?
-        // добавить проверку на равенство нового и старого name
-        return lr.update(label);
+        if (label.getId() > 0 && lr.getById(label.getId()) != null)
+            return lr.update(label);
+        else
+            return label;
     }
 
     public void deleteById(long id) {
-        // добавить проверку: существет ли такой id
-        lr.deleteById(id);
+        if (lr.getById(id) != null)
+            lr.deleteById(id);
     }
 }
