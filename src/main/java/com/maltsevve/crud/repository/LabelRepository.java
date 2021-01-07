@@ -17,18 +17,18 @@ public class LabelRepository {
     public LabelRepository() {
     }
 
-    Label getById(long id) {
+    public Label getById(long id) {
         List<Label> labels = readToList();
         Label label = labels.stream().filter((n) -> n.getId().equals(id)).findFirst().orElse(null);
         if (label == null) System.out.println("No such object in the file.");
         return label;
     }
 
-    List<Label> getAll() {
+    public List<Label> getAll() {
         return readToList();
     }
 
-    Label save(Label label) {
+    public Label save(Label label) {
         label.setId(generateID());
         List<Label> labels = readToList();
         labels.add(label);
@@ -36,18 +36,18 @@ public class LabelRepository {
         return label;
     }
 
-    Label update(Label label) {
+    public Label update(Label label) {
         List<Label> labels = readToList();
-        Label lab = labels.stream().filter((n) -> n.getId().equals(label.getId())).findFirst().orElse(null);
-        if (lab == null) System.out.println("Update is unavailable: no such object in the file.");
+        Label lb = labels.stream().filter((n) -> n.getId().equals(label.getId())).findFirst().orElse(null);
+        if (lb == null) System.out.println("Update is unavailable: no such object in the file.");
         else {
-            labels.set(labels.indexOf(lab), label);
+            labels.set(labels.indexOf(lb), label);
             writeFromList(labels);
         }
         return label;
     }
 
-    void deleteById(long id) {
+    public void deleteById(long id) {
         List<Label> labels = readToList();
         if (labels.removeIf(label -> label.getId().equals(id)))
             System.out.println("Label " + id + " deleted.");
@@ -65,7 +65,7 @@ public class LabelRepository {
         }
     }
 
-    private List<Label> readToList() {
+    private List<Label> readToList() {          // Заменить цикл на stream
         List<Label> list = new ArrayList<>();
         List<String> strings;
         Path path = Paths.get(labels);
@@ -88,7 +88,7 @@ public class LabelRepository {
         return list;
     }
 
-    public long generateID() {
+    long generateID() {
         List<Label> labels = readToList();
         if (!labels.isEmpty())
             return Objects.requireNonNull(labels.stream().max(Comparator.
