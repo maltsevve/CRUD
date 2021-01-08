@@ -1,12 +1,12 @@
 package com.maltsevve.crud.controller;
 
 import com.maltsevve.crud.model.Label;
-import com.maltsevve.crud.repository.LabelRepository;
+import com.maltsevve.crud.repository.JavaIOLabelRepositoryImpl;
 
 import java.util.List;
 
 public class LabelController { //Тут так же выполняем проверку всех входящих данных
-    LabelRepository lr = new LabelRepository();
+    JavaIOLabelRepositoryImpl lr = new JavaIOLabelRepositoryImpl();
 
     public LabelController() {
     }
