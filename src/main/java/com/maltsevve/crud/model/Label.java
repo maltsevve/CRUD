@@ -1,7 +1,7 @@
 package com.maltsevve.crud.model;
 
 public class Label {
-    private long id;
+    private Long id;
     private String name;
 
     public Label() {

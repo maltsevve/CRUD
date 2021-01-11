@@ -65,12 +65,13 @@ public class JavaIOLabelRepositoryImpl implements LabelRepository{
         }
     }
 
-    private List<Label> readToList() {          // Заменить цикл на stream
+    private List<Label> readToList() {          // Заменить цикл на stream!!!
         List<Label> list = new ArrayList<>();
         Path path = Paths.get(labels);
 
         try (Stream<String> lineStream = Files.lines(path)) {
             List<String> strings = lineStream.collect(Collectors.toList());
+
             if (!strings.isEmpty()) {
                 for (String s : strings) {
                     String[] str = s.split("=");

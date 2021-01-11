@@ -6,22 +6,23 @@ import com.maltsevve.crud.model.Label;
 import java.util.List;
 import java.util.Scanner;
 
-class LabelView {
+public class LabelView {
     private final LabelController lc = new LabelController();
     Scanner sc = new Scanner(System.in);
 
-    LabelView() {
+    public LabelView() {
 
     }
 
     private String menu() {
-        return ("Select menu item:\n" +
+        return ("'LABELS'\n" +
+                "Select menu item:\n" +
                 "1 - Save\n" +
                 "2 - Update\n" +
                 "3 - Get\n" +
                 "4 - Get all\n" +
                 "5 - Delete\n" +
-                "6 - Exit");
+                "6 - Return");
     }
 
     public void logic() {
@@ -33,7 +34,6 @@ class LabelView {
                 case 1 -> { // SAVE
                     System.out.println("Input name: ");
                     input = sc.nextLine();
-                    // Возможно требуется проверка. Уточнить существуют ли недопустимые имена.
                     lc.save(new Label(input));
                     System.out.println();
                     logic();
@@ -95,7 +95,7 @@ class LabelView {
                     input = sc.nextLine();
                     if (input.matches("\\d+")) {
                         Long l = Long.parseLong(input);
-                        if (l > 0 && lc.getAll().stream().anyMatch(lb -> lb.getId() == l)) {
+                        if (l > 0 && lc.getAll().stream().anyMatch(lb -> lb.getId().equals(l))) {
                             lc.deleteById(l);
                             System.out.println();
                         } else {
