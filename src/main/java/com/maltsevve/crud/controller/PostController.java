@@ -24,15 +24,15 @@ public class PostController {
         return pr.getAll();
     }
 
-    public Post save(Post Post) {
-        return pr.save(Post);
+    public Post save(Post post) {
+        return pr.save(post);
     }
 
-    public Post update(Post Post) {
-        if (Post.getId() > 0 && pr.getById(Post.getId()) != null) {
-            return pr.update(Post);
+    public Post update(Post post) {
+        if (post.getId() > 0 && pr.getById(post.getId()) != null) {
+            return pr.update(post);
         } else {
-            return Post;
+            return post;
         }
     }
 

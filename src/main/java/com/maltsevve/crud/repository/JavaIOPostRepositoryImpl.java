@@ -62,7 +62,7 @@ public class JavaIOPostRepositoryImpl implements PostRepository {
     public void deleteById(Long id) {
         List<Post> posts = readToList();
         if (posts.removeIf(post -> post.getId().equals(id))) {
-            System.out.println("post " + id + " deleted.");
+            System.out.println("Post " + id + " deleted.");
         }
         writeFromList(posts);
     }

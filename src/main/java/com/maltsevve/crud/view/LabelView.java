@@ -6,6 +6,8 @@ import com.maltsevve.crud.model.Label;
 import java.util.List;
 import java.util.Scanner;
 
+import static com.maltsevve.crud.Runner.mainMenuLogic;
+
 public class LabelView {
     private final LabelController lc = new LabelController();
     Scanner sc = new Scanner(System.in);
@@ -107,6 +109,8 @@ public class LabelView {
                     logic();
                 }
                 case 6 -> {
+                    System.out.println();
+                    mainMenuLogic();
                 }
                 default -> {
                     System.out.println("Non-existent menu item. Try again.\n");

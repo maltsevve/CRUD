@@ -17,10 +17,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class JavaIOWriterRepositoryImpl implements WriterRepository{
+public class JavaIOWriterRepositoryImpl implements WriterRepository {
     private final String writers = "src/main/resources/files/writers.txt";
 
-    public JavaIOWriterRepositoryImpl(){}
+    public JavaIOWriterRepositoryImpl() {
+    }
 
     @Override
     public Writer save(Writer writer) {
@@ -59,7 +60,7 @@ public class JavaIOWriterRepositoryImpl implements WriterRepository{
     public void deleteById(Long id) {
         List<Writer> writers = readToList();
         if (writers.removeIf(writer -> writer.getId().equals(id))) {
-            System.out.println("writer " + id + " deleted.");
+            System.out.println("Writer " + id + " deleted.");
         }
         writeFromList(writers);
     }
@@ -67,9 +68,9 @@ public class JavaIOWriterRepositoryImpl implements WriterRepository{
     private void writeFromList(List<Writer> list) {
         Path path = Paths.get(writers);
         List<String> strings = list.stream().map((w) -> w.getId() + "=" + w.getFirstName() + "=" + w.getLastName() +
-                ": " + w.getPosts().stream().map((p) -> p.getId() + "=" + p.getContent() + ": " + p.getLabels().stream().
-                map((l) -> l.getId() + "=" + l.getName()).collect(Collectors.toList()) + " : " + p.getCreated() + ": " +
-                p.getUpdated())).collect(Collectors.toList());
+                ": \n" + w.getPosts().stream().map((p) -> p.getId() + "=" + p.getContent() + ": " + p.getLabels().stream().
+                map((l) -> l.getId() + "=" + l.getName()).collect(Collectors.toList()) + ": " + p.getCreated() + ": " +
+                p.getUpdated() + "\n").collect(Collectors.toList()) + "\n").collect(Collectors.toList());
         try {
             Files.write(path, strings, StandardCharsets.UTF_8);
         } catch (IOException e) {
@@ -78,58 +79,81 @@ public class JavaIOWriterRepositoryImpl implements WriterRepository{
     }
 
     private List<Writer> readToList() {          // МЕТОД УЖАСЕН, ПЕРЕДЕЛАТЬ! Начать с аналогичного в IOLabelRepository
-//        List<Writer> list = new ArrayList<>();
-//        Path path = Paths.get(writers);
-//
-//        try (Stream<String> lineStream = Files.lines(path)) {
-//            List<String> strings = lineStream.collect(Collectors.toList());
-//
-//            if (!strings.isEmpty()) {
-//                for (String s : strings) {
-//                    // 0 - writers id & names; 1 - post id & content; 2 - labels id & name; 3 - Create date; 4 - Update date.
-//                    String[] str = s.split(": ");
-//                    //
-//                    String[] str1 = str[1].substring(1, str[1].length() - 1).split("=");
-//                    String[] str2 = str[2].substring(1, str[2].length() - 2).split(", ");
-//
-//                    List<Post> posts = new ArrayList<>();
-//                    for (String string : str2) {
-//                        String[] str3 = string.split("=");
-//                        Post post = new Post(str3[1], );
-//                        label.setId(Long.parseLong(str3[0]));
-//                        labels.add(label);
-//                    }
-//
-//                    String[] str4 = str[0].split("=");
-//                    Post post = new Post(str4[1], labels);
-//                    post.setId(Long.parseLong(str4[0]));
-//
-//                    if (str[2].length() > 4) {
-//                        DateFormat dateFormat = new SimpleDateFormat("E MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
-//                        try {
-//                            post.setCreated(dateFormat.parse(str[2]));
-//                        } catch (ParseException e) {
-//                            System.out.println("Не удалось установить дату создания.");
-//                        }
-//                    }
-//                    if (str[3].length() > 4) {
-//                        DateFormat dateFormat = new SimpleDateFormat("E MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
-//                        try {
-//                            post.setUpdated(dateFormat.parse(str[3]));
-//                        } catch (ParseException e) {
-//                            System.out.println("Не удалось установить дату изменения.");
-//                        }
-//                    }
-//                    list.add(post);
-//                }
-//            }
-//        } catch (FileNotFoundException e) {
-//            System.out.println("Файл не найден: " + e);
-//        } catch (IOException e) {
-//            System.out.println("Ошибка ввода-вывода: " + e);
-//        }
-//        return list;
-        return null;
+        Path path = Paths.get(writers);
+        List<Writer> writers = new ArrayList<>();
+
+        try (Stream<String> lineStream = Files.lines(path)) {
+            List<String> strings = lineStream.collect(Collectors.toList());
+
+            if (!strings.isEmpty()) {
+                List<Post> posts = new ArrayList<>();
+                String firstName = "";
+                String lastName = "";
+                Long id = 0L;
+
+                for (String s : strings) {
+                    if (!s.isEmpty()) {
+                        String[] str = s.split("=");
+                        if (s.substring(0, str[0].length()).matches("\\d+")) {
+                            id = Long.parseLong(str[0]);
+                            firstName = str[1];
+                            lastName = str[2].substring(0, str[2].length() - 2);
+                        } else if (!s.substring(0, 1).matches("]")){
+                            String[] str1 = s.split(": ");
+                            String[] str2 = str1[1].substring(1, str1[1].length() - 1).split(", ");
+
+                            List<Label> labels = new ArrayList<>();
+                            for (String string : str2) {
+                                String[] str3 = string.split("=");
+                                Label label = new Label(str3[1]);
+                                label.setId(Long.parseLong(str3[0]));
+                                labels.add(label);
+                            }
+
+                            String[] str4 = str1[0].split("=");
+                            String postID;
+                            if (str4[0].substring(0, 1).matches("\\[")) {
+                                postID = str4[0].substring(1, 2);
+                            } else if (str4[0].substring(0, 2).matches(", ")) {
+                                postID = str4[0].substring(2, 3);
+                            } else {
+                                postID = str4[0].substring(0, 1);
+                            }
+                            Post post = new Post(str4[1], labels);
+                            post.setId(Long.parseLong(postID));
+
+                            if (str1[2].length() > 4) {
+                                DateFormat dateFormat = new SimpleDateFormat("E MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
+                                try {
+                                    post.setCreated(dateFormat.parse(str1[2]));
+                                } catch (ParseException e) {
+                                    System.out.println("Не удалось установить дату создания.");
+                                }
+                            }
+                            if (str1[3].length() > 4) {
+                                DateFormat dateFormat = new SimpleDateFormat("E MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
+                                try {
+                                    post.setUpdated(dateFormat.parse(str1[3]));
+                                } catch (ParseException e) {
+                                    System.out.println("Не удалось установить дату изменения.");
+                                }
+                            }
+                            posts.add(post);
+                        }
+                    } else if (!firstName.isEmpty() && !lastName.isEmpty() && !posts.isEmpty() && id > 0) {
+                        Writer writer = new Writer(firstName, lastName, posts);
+                        writer.setId(id);
+                        writers.add(writer);
+                        posts = new ArrayList<>();
+                    }
+                }
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("Файл не найден: " + e);
+        } catch (IOException e) {
+            System.out.println("Ошибка ввода-вывода: " + e);
+        }
+        return writers;
     }
 
 
