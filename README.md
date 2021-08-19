@@ -1,1 +1,1 @@
-# CRUD
+# Console CRUD application.
